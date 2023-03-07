@@ -1,4 +1,5 @@
 import sys
+import matplotlib.pyplot as plt
 from NeuralNetwork import *
 
 if len(sys.argv) < 2:
@@ -17,9 +18,10 @@ path = base + regression_bi
 df = pd.read_csv(path, names=["X1", "X2", "Y"])
 (X_dat, y_dat) = (np.asarray(df[['X1', 'X2']]), np.asarray(df[['Y']]))
 
+# Actual output for each input data
 plt.figure()
 ax = plt.axes(projection='3d')
-ax.scatter3D(X_dat[:,0], X_dat[:,1], y_dat[:,0])
+ax.scatter(X_dat[:,0], X_dat[:,1], y_dat[:,0], marker='.')
 ax.set_xlabel('X1')
 ax.set_ylabel('X2')
 ax.set_zlabel('Y')
@@ -58,14 +60,16 @@ plt.ylabel("MSE")
 plt.xlabel("Number of epochs")
 
 y_pred = f.test(X_test)
+err_test = Util.error_avg(y_test, y_pred)
+print(f"MSE on test data: {err_test:.4f}")
+
+# Model ouput vs input for test data
 plt.figure()
 ax = plt.axes(projection='3d')
-ax.scatter3D(X_test[:,0], X_test[:,1], np.asarray(y_pred)[:,0])
+ax.scatter(X_test[:,0], X_test[:,1], np.asarray(y_pred)[:,0], marker='.')
 ax.set_xlabel('X1')
 ax.set_ylabel('X2')
 ax.set_zlabel('Y')
-err_test = Util.error_avg(y_test, y_pred)
-print(f"MSE on test data: {err_test:.4f}")
 
 
 plt.show()

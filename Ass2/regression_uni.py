@@ -1,4 +1,5 @@
 import sys
+import matplotlib.pyplot as plt
 from NeuralNetwork import *
 
 if len(sys.argv) < 2:
@@ -17,8 +18,9 @@ path = base + regression_uni
 df = pd.read_csv(path, names=["X", "Y"])
 (X_dat, y_dat) = (np.asarray(df[['X']]), np.asarray(df[['Y']]))
 
+# Actual output for each input data
 plt.figure()
-plt.plot(X_dat, y_dat, 'o')
+plt.plot(X_dat, y_dat, '.')
 plt.xlabel('X')
 plt.ylabel('Y')
 
@@ -44,19 +46,21 @@ f = FCNN([Layer(d, Util.logistic),
           Layer(best_h, Util.logistic),
           Layer(k, Util.linear)])
 
-err_train = f.train(X_train, y_train)
+err_train = f.train(X_train, y_train, optimize=True, debug=True)
 plt.figure()
 plt.plot(err_train)
 plt.xlabel("Number of epochs")
 plt.ylabel("MSE")
 
 y_pred = f.test(X_test)
-plt.figure()
-plt.plot(X_test, y_pred, 'o')
-plt.xlabel("X")
-plt.ylabel("Y predicted")
 err_test = Util.error_avg(y_test, y_pred)
 print(f"MSE on test data: {err_test:.4f}")
+
+# Model ouput vs input for test data
+plt.figure()
+plt.plot(X_test, y_pred, '.')
+plt.xlabel("X")
+plt.ylabel("Y predicted")
 
 
 plt.show()

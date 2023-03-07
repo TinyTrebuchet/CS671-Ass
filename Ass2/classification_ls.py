@@ -1,4 +1,6 @@
 import sys
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from NeuralNetwork import *
 
 if len(sys.argv) < 2:
@@ -24,10 +26,11 @@ for (y, filename) in enumerate(["Class1.txt", "Class2.txt", "Class3.txt"]):
     X_dat.append(np.asarray(df))
     y_dat.append(np.full((len(df), k), Util.class_to_arr(k,y)))
 
+# Actual class for each input data
 plt.figure()
-plt.plot(X_dat[0][:,0], X_dat[0][:,1], 'o', label="Class 0")
-plt.plot(X_dat[1][:,0], X_dat[1][:,1], 'o', label="Class 1")
-plt.plot(X_dat[2][:,0], X_dat[2][:,1], 'o', label="Class 2")
+plt.plot(X_dat[0][:,0], X_dat[0][:,1], '.', label="Class 0")
+plt.plot(X_dat[1][:,0], X_dat[1][:,1], '.', label="Class 1")
+plt.plot(X_dat[2][:,0], X_dat[2][:,1], '.', label="Class 2")
 
 X_dat = np.reshape(X_dat, (total,d), 'F')
 y_dat = np.reshape(y_dat, (total,k), 'F')
@@ -54,33 +57,50 @@ f = FCNN([Layer(d, Util.logistic),
           Layer(best_h, Util.logistic),
           Layer(k, Util.logistic)])
 
-err_train = f.train(X_train, y_train, optimize=True)
+err_train = f.train(X_train, y_train, optimize=True, debug=True)
 plt.figure()
 plt.plot(err_train)
 plt.ylabel("MSE")
 plt.xlabel("Number of epochs")
 
 y_pred = f.test(X_test)
-plt.figure()
-ax = plt.axes(projection='3d')
-ax.scatter3D(X_test[:,0], X_test[:,1], [Util.arr_to_class(y_predi) for y_predi in y_pred])
-ax.set_xlabel('X1')
-ax.set_ylabel('X2')
-ax.set_zlabel('Y')
 acc_test = Util.accuracy(y_test, y_pred)
 confusion_mat = Util.confusion(y_test, y_pred)
 print(f"Accuracy on test data: {(acc_test * 100):.2f}%")
 print("Confusion matrix: ", confusion_mat, sep="\n")
 
+# Model ouput vs input for test data
+plt.figure()
+ax = plt.axes(projection='3d')
+ax.scatter(X_test[:,0], X_test[:,1], [Util.arr_to_class(y_predi) for y_predi in y_pred], marker='.')
+ax.set_xlabel('X1')
+ax.set_ylabel('X2')
+ax.set_zlabel('Y')
 
+# Activation for each neuron vs input for test data
 fig = plt.figure()
 axs = []
+c0 = mpatches.Patch(color='red', label='Class 0')
+c1 = mpatches.Patch(color='green', label='Class 1')
+c2 = mpatches.Patch(color='blue', label='Class 2')
 for h in range(best_h):
     axs.append(fig.add_subplot(1, best_h, h+1, projection='3d'))
+    axs[-1].set_title(f"Neuron {h+1}")
+    axs[-1].set_xlabel("X1")
+    axs[-1].set_ylabel("X2")
+    axs[-1].set_zlabel("Activation")
+    axs[-1].legend(handles=[c0, c1, c2])
 
 for i in range(len(X_test)):
+    pred = Util.arr_to_class(y_pred[i])
     f.forward_compute(X_test[i])
     for h in range(best_h):
-        axs[h].scatter(X_test[i][0], X_test[i][1], f.network[1].A[h], c='blue', marker='.')
+        if pred == 0:
+            color = 'red'
+        elif pred == 1:
+            color = 'green'
+        elif pred == 2:
+            color = 'blue'
+        axs[h].scatter(X_test[i][0], X_test[i][1], f.network[1].A[h], c=color, marker='.')
 
 plt.show()
