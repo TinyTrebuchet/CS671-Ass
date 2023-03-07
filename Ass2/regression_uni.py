@@ -27,7 +27,7 @@ plt.ylabel('Y')
 # err_min = np.inf
 # for h in range(1,9):
 #     f = FCNN([Layer(d, Util.logistic),
-#               Layer(best_h, Util.logistic),
+#               Layer(h, Util.logistic),
 #               Layer(k, Util.linear)])
 #     f.train(X_train, y_train)
 #     err_valid = Util.error_avg(y_valid, f.test(X_valid))
@@ -38,7 +38,7 @@ plt.ylabel('Y')
 #         err_min = err_valid
 # print()
 
-best_h = 1
+best_h = 3
 print(f"Selecting {best_h} neurons in the hidden layer")
 f = FCNN([Layer(d, Util.logistic),
           Layer(best_h, Util.logistic),
@@ -52,7 +52,7 @@ plt.ylabel("MSE")
 
 y_pred = f.test(X_test)
 plt.figure()
-plt.plot(X_test, y_test, 'o')
+plt.plot(X_test, y_pred, 'o')
 plt.xlabel("X")
 plt.ylabel("Y predicted")
 err_test = Util.error_avg(y_test, y_pred)

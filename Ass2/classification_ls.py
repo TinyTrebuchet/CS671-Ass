@@ -35,11 +35,11 @@ y_dat = np.reshape(y_dat, (total,k), 'F')
 [(X_train, y_train), (X_valid, y_valid), (X_test, y_test)] = Util.split_data(X_dat, y_dat, 0.6, 0.2, 0.2)
 
 # acc_max = -1
-# for h in range(2, 9):
+# for h in range(1, 9):
 #     f = FCNN([Layer(d, Util.logistic),
 #               Layer(h, Util.logistic),
 #               Layer(k, Util.logistic)])
-#     f.train(X_train, y_train, optimize=True, debug=True)
+#     f.train(X_train, y_train, optimize=True, max_epoch=100, debug=True)
 #     acc_valid = Util.accuracy(y_valid, f.test(X_valid))
 #     print(f"Accuracy with {h} neurons in the hidden layer: {(acc_valid * 100):.2f}%")
 #     if acc_valid > acc_max:
@@ -48,7 +48,7 @@ y_dat = np.reshape(y_dat, (total,k), 'F')
 #         acc_max = acc_valid
 # print()
 
-best_h = 2
+best_h = 3
 print(f"Selecting {best_h} neurons in the hidden layer")
 f = FCNN([Layer(d, Util.logistic),
           Layer(best_h, Util.logistic),
@@ -72,5 +72,15 @@ confusion_mat = Util.confusion(y_test, y_pred)
 print(f"Accuracy on test data: {(acc_test * 100):.2f}%")
 print("Confusion matrix: ", confusion_mat, sep="\n")
 
+
+fig = plt.figure()
+axs = []
+for h in range(best_h):
+    axs.append(fig.add_subplot(1, best_h, h+1, projection='3d'))
+
+for i in range(len(X_test)):
+    f.forward_compute(X_test[i])
+    for h in range(best_h):
+        axs[h].scatter(X_test[i][0], X_test[i][1], f.network[1].A[h], c='blue', marker='.')
 
 plt.show()

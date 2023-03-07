@@ -12,13 +12,6 @@ class Util:
         else:
             return (fx * (1 - fx))
 
-    # ReLu
-    def relu(x, derivative=False):
-        if not derivative:
-            return (x if x >= 0 else 0)
-        else:
-            return (1 if x >= 0 else 0)
-
     # Linear activation function
     def linear(x, derivative=False):
         if not derivative:
@@ -97,6 +90,9 @@ class Util:
         confusion_mat = np.asmatrix(np.zeros((k,k), int))
         for i in range(n):
             confusion_mat[Util.arr_to_class(y[i]), Util.arr_to_class(y_pred[i])] += 1
+        confusion_mat = pd.DataFrame(confusion_mat,
+                                     index=[f'Actual class {i}' for i in range(confusion_mat.shape[0])],
+                                     columns=[f'Predicted class {i}' for i in range(confusion_mat.shape[1])])
         return confusion_mat
 
 class Layer:
