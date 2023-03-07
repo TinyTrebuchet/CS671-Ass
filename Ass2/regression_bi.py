@@ -75,6 +75,7 @@ y_pred_test = f.test(X_test)
 err_test = Util.error_avg(y_test, y_pred_test)
 print(f"MSE on test data: {err_test:.4f}")
 
+print()
 
 # Target Output and Model Output vs Data Plot
 fig = plt.figure()
@@ -142,6 +143,108 @@ plt.scatter(y_test,y_pred_test)
 plt.xlabel('Target Output')
 plt.ylabel('Model Output')
 plt.title('Test Data')
+
+# # Activation for each neuron vs input for training data
+# print("Plotting activation for each neuron vs input for training data")
+# figs = [plt.figure() for _ in range(3)]
+# for i in range(len(figs)):
+#     if i == len(figs)-1:
+#         figs[i].suptitle("Activation for each neuron on training data [Output layer]")
+#     else:
+#         figs[i].suptitle(f"Activation for each neuron on training data [Hidden layer {i+1}]")
+#
+# axs = [[] for _ in range(3)]
+# for h1 in range(best_h1):
+#     axs[0].append(figs[0].add_subplot(3, 3, h1+1, projection='3d'))
+# for h2 in range(best_h2):
+#     axs[1].append(figs[1].add_subplot(3, 3, h2+1, projection='3d'))
+# for o in range(k):
+#     axs[2].append(figs[2].add_subplot(1, k, o+1, projection='3d'))
+# for ax in axs:
+#     for i in range(len(ax)):
+#         ax[i].set_title(f"Neuron {i+1}")
+#         ax[i].set_xlabel("X1")
+#         ax[i].set_ylabel("X2")
+#         ax[i].set_zlabel("Activation")
+#
+# y_pred = f.test(X_train)
+# for i in range(len(X_train)):
+#     pred = y_pred[i]
+#     f.forward_compute(X_train[i])
+#     for h1 in range(best_h1):
+#         axs[0][h1].scatter(X_train[i][0], X_train[i][1], f.network[1].A[h1], c='blue', marker='.')
+#     for h2 in range(best_h2):
+#         axs[1][h2].scatter(X_train[i][0], X_train[i][1], f.network[2].A[h2], c='blue', marker='.')
+#     for o in range(k):
+#         axs[2][o].scatter(X_train[i][0], X_train[i][1], f.network[3].A[o], c='blue', marker='.')
+#
+# # Activation for each neuron vs input for validation data
+# print("Plotting activation for each neuron vs input for validation data")
+# figs = [plt.figure() for _ in range(3)]
+# for i in range(len(figs)):
+#     if i == len(figs)-1:
+#         figs[i].suptitle("Activation for each neuron on validation data [Output layer]")
+#     else:
+#         figs[i].suptitle(f"Activation for each neuron on validation data [Hidden layer {i+1}]")
+#
+# axs = [[] for _ in range(3)]
+# for h1 in range(best_h1):
+#     axs[0].append(figs[0].add_subplot(3, 3, h1+1, projection='3d'))
+# for h2 in range(best_h2):
+#     axs[1].append(figs[1].add_subplot(3, 3, h2+1, projection='3d'))
+# for o in range(k):
+#     axs[2].append(figs[2].add_subplot(1, k, o+1, projection='3d'))
+# for ax in axs:
+#     for i in range(len(ax)):
+#         ax[i].set_title(f"Neuron {i+1}")
+#         ax[i].set_xlabel("X1")
+#         ax[i].set_ylabel("X2")
+#         ax[i].set_zlabel("Activation")
+#
+# y_pred = f.test(X_valid)
+# for i in range(len(X_valid)):
+#     pred = y_pred[i]
+#     f.forward_compute(X_valid[i])
+#     for h1 in range(best_h1):
+#         axs[0][h1].scatter(X_valid[i][0], X_valid[i][1], f.network[1].A[h1], c='blue', marker='.')
+#     for h2 in range(best_h2):
+#         axs[1][h2].scatter(X_valid[i][0], X_valid[i][1], f.network[2].A[h2], c='blue', marker='.')
+#     for o in range(k):
+#         axs[2][o].scatter(X_valid[i][0], X_valid[i][1], f.network[3].A[o], c='blue', marker='.')
+
+# Activation for each neuron vs input for test data
+print("Plotting activation for each neuron vs input for test data")
+figs = [plt.figure() for _ in range(3)]
+for i in range(len(figs)):
+    if i == len(figs)-1:
+        figs[i].suptitle("Activation for each neuron on test data [Output layer]")
+    else:
+        figs[i].suptitle(f"Activation for each neuron on test data [Hidden layer {i+1}]")
+
+axs = [[] for _ in range(3)]
+for h1 in range(best_h1):
+    axs[0].append(figs[0].add_subplot(3, 3, h1+1, projection='3d'))
+for h2 in range(best_h2):
+    axs[1].append(figs[1].add_subplot(3, 3, h2+1, projection='3d'))
+for o in range(k):
+    axs[2].append(figs[2].add_subplot(1, k, o+1, projection='3d'))
+for ax in axs:
+    for i in range(len(ax)):
+        ax[i].set_title(f"Neuron {i+1}")
+        ax[i].set_xlabel("X1")
+        ax[i].set_ylabel("X2")
+        ax[i].set_zlabel("Activation")
+
+y_pred = f.test(X_test)
+for i in range(len(X_test)):
+    pred = y_pred[i]
+    f.forward_compute(X_test[i])
+    for h1 in range(best_h1):
+        axs[0][h1].scatter(X_test[i][0], X_test[i][1], f.network[1].A[h1], c='blue', marker='.')
+    for h2 in range(best_h2):
+        axs[1][h2].scatter(X_test[i][0], X_test[i][1], f.network[2].A[h2], c='blue', marker='.')
+    for o in range(k):
+        axs[2][o].scatter(X_test[i][0], X_test[i][1], f.network[3].A[o], c='blue', marker='.')
 
 
 plt.show()

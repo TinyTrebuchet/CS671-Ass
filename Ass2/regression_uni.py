@@ -47,7 +47,7 @@ f = FCNN([Layer(d, Util.logistic),
           Layer(best_h, Util.logistic),
           Layer(k, Util.linear)])
 
-err_train = f.train(X_train, y_train, optimize=True, debug=True)
+err_train = f.train(X_train, y_train, debug=True)
 plt.figure()
 plt.plot(err_train)
 plt.xlabel("Number of epochs")
@@ -67,6 +67,8 @@ print(f"MSE on validation data: {err_validation:.4f}")
 y_pred_test = f.test(X_test)
 err_test = Util.error_avg(y_test, y_pred_test)
 print(f"MSE on test data: {err_test:.4f}")
+
+print()
 
 # Target Output and Model Output vs Data Plot
 plt.figure()
@@ -148,6 +150,94 @@ plt.subplots_adjust(left=0.1,
                     top=0.9,
                     wspace=0.4,
                     hspace=0.4)
+
+
+# # Activation for each neuron vs input for training data
+# print("Plotting activation for each neuron vs input for training data")
+# figs = [plt.figure() for _ in range(2)]
+# for i in range(len(figs)):
+#     if i == len(figs)-1:
+#         figs[i].suptitle("Activation for each neuron on training data [Output layer]")
+#     else:
+#         figs[i].suptitle(f"Activation for each neuron on training data [Hidden layer {i+1}]")
+#
+# axs = [[] for _ in range(2)]
+# for h in range(best_h):
+#     axs[0].append(figs[0].add_subplot(1, best_h, h+1))
+# for o in range(k):
+#     axs[1].append(figs[1].add_subplot(1, k, o+1))
+# for ax in axs:
+#     for i in range(len(ax)):
+#         ax[i].set_title(f"Neuron {i+1}")
+#         ax[i].set_xlabel("X")
+#         ax[i].set_ylabel("Activation")
+#
+# y_pred = f.test(X_train)
+# for i in range(len(X_train)):
+#     pred = y_pred[i]
+#     f.forward_compute(X_train[i])
+#     for h in range(best_h):
+#         axs[0][h].plot(X_train[i][0], f.network[1].A[h], 'b.')
+#     for o in range(k):
+#         axs[1][o].plot(X_train[i][0], f.network[2].A[o], 'b.')
+#
+# # Activation for each neuron vs input for validation data
+# print("Plotting activation for each neuron vs input for validation data")
+# figs = [plt.figure() for _ in range(2)]
+# for i in range(len(figs)):
+#     if i == len(figs)-1:
+#         figs[i].suptitle("Activation for each neuron on validation data [Output layer]")
+#     else:
+#         figs[i].suptitle(f"Activation for each neuron on validation data [Hidden layer {i+1}]")
+#
+# axs = [[] for _ in range(2)]
+# for h in range(best_h):
+#     axs[0].append(figs[0].add_subplot(1, best_h, h+1))
+# for o in range(k):
+#     axs[1].append(figs[1].add_subplot(1, k, o+1))
+# for ax in axs:
+#     for i in range(len(ax)):
+#         ax[i].set_title(f"Neuron {i+1}")
+#         ax[i].set_xlabel("X")
+#         ax[i].set_ylabel("Activation")
+#
+# y_pred = f.test(X_valid)
+# for i in range(len(X_valid)):
+#     pred = y_pred[i]
+#     f.forward_compute(X_valid[i])
+#     for h in range(best_h):
+#         axs[0][h].plot(X_valid[i][0], f.network[1].A[h], 'b.')
+#     for o in range(k):
+#         axs[1][o].plot(X_valid[i][0], f.network[2].A[o], 'b.')
+
+# Activation for each neuron vs input for test data
+print("Plotting activation for each neuron vs input for test data")
+figs = [plt.figure() for _ in range(2)]
+for i in range(len(figs)):
+    if i == len(figs)-1:
+        figs[i].suptitle("Activation for each neuron on test data [Output layer]")
+    else:
+        figs[i].suptitle(f"Activation for each neuron on test data [Hidden layer {i+1}]")
+
+axs = [[] for _ in range(2)]
+for h in range(best_h):
+    axs[0].append(figs[0].add_subplot(1, best_h, h+1))
+for o in range(k):
+    axs[1].append(figs[1].add_subplot(1, k, o+1))
+for ax in axs:
+    for i in range(len(ax)):
+        ax[i].set_title(f"Neuron {i+1}")
+        ax[i].set_xlabel("X")
+        ax[i].set_ylabel("Activation")
+
+y_pred = f.test(X_test)
+for i in range(len(X_test)):
+    pred = y_pred[i]
+    f.forward_compute(X_test[i])
+    for h in range(best_h):
+        axs[0][h].plot(X_test[i][0], f.network[1].A[h], 'b.')
+    for o in range(k):
+        axs[1][o].plot(X_test[i][0], f.network[2].A[o], 'b.')
 
 
 plt.show()
