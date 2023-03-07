@@ -31,6 +31,10 @@ plt.figure()
 plt.plot(X_dat[0][:,0], X_dat[0][:,1], '.', label="Class 0")
 plt.plot(X_dat[1][:,0], X_dat[1][:,1], '.', label="Class 1")
 plt.plot(X_dat[2][:,0], X_dat[2][:,1], '.', label="Class 2")
+plt.xlabel('X1')
+plt.ylabel('X2')
+plt.title("Actual output")
+plt.legend()
 
 X_dat = np.reshape(X_dat, (total,d), 'F')
 y_dat = np.reshape(y_dat, (total,k), 'F')
@@ -69,20 +73,42 @@ confusion_mat = Util.confusion(y_test, y_pred)
 print(f"Accuracy on test data: {(acc_test * 100):.2f}%")
 print("Confusion matrix: ", confusion_mat, sep="\n")
 
-# Model ouput vs input for test data
+c0 = mpatches.Patch(color='red', label='Class 0')
+c1 = mpatches.Patch(color='green', label='Class 1')
+c2 = mpatches.Patch(color='blue', label='Class 2')
+
+# Decision plot boundary
+grid = []
+(X1_min, X2_min) = pd.DataFrame(X_test).min()
+(X1_max, X2_max) = pd.DataFrame(X_test).max()
+var = 5
+for i in np.arange (X1_min - var, X1_max + var, 0.5):
+    for j in np.arange(X2_min - var, X2_max + var, 0.5):
+        grid.append([i,j])
+grid = np.asarray(grid)
+
+grid_pred = f.test(grid)
+grid_pred = [Util.arr_to_class(grid_predi) for grid_predi in grid_pred]
+
 plt.figure()
-ax = plt.axes(projection='3d')
-ax.scatter(X_test[:,0], X_test[:,1], [Util.arr_to_class(y_predi) for y_predi in y_pred], marker='.')
-ax.set_xlabel('X1')
-ax.set_ylabel('X2')
-ax.set_zlabel('Y')
+for i in range(len(grid)):
+    if grid_pred[i] == 0:
+        color = 'red'
+    elif grid_pred[i] == 1:
+        color = 'green'
+    elif grid_pred[i] == 2:
+        color = 'blue'
+    plt.plot(grid[i][0], grid[i][1], c=color, marker='.', alpha=0.1)
+
+plt.plot(X_dat[:,0], X_dat[:,1], '.')
+plt.legend(handles=[c0, c1, c2])
+plt.xlabel('X1')
+plt.ylabel('X2')
+plt.title("Decision plot boundary")
 
 # Activation for each neuron vs input for test data
 fig = plt.figure()
 axs = []
-c0 = mpatches.Patch(color='red', label='Class 0')
-c1 = mpatches.Patch(color='green', label='Class 1')
-c2 = mpatches.Patch(color='blue', label='Class 2')
 for h in range(best_h):
     axs.append(fig.add_subplot(1, best_h, h+1, projection='3d'))
     axs[-1].set_title(f"Neuron {h+1}")

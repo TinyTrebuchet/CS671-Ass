@@ -29,6 +29,7 @@ plt.plot(X_dat[0][:,0], X_dat[0][:,1], '.', label="Class 0")
 plt.plot(X_dat[1][:,0], X_dat[1][:,1], '.', label="Class 1")
 plt.xlabel("X1")
 plt.ylabel("X2")
+plt.title("Actual output")
 plt.legend()
 
 X_dat = np.reshape(X_dat, (total,d), 'F')
@@ -72,21 +73,40 @@ confusion_mat = Util.confusion(y_test, y_pred)
 print(f"Accuracy on test data: {(acc_test * 100):.2f}%")
 print("Confusion matrix: ", confusion_mat, sep="\n")
 
-# Model ouput vs input for test data
+c0 = mpatches.Patch(color='red', label='Class 0')
+c1 = mpatches.Patch(color='green', label='Class 1')
+
+# Decision plot boundary
+grid = []
+(X1_min, X2_min) = pd.DataFrame(X_test).min()
+(X1_max, X2_max) = pd.DataFrame(X_test).max()
+var = 5
+for i in np.arange (X1_min - var, X1_max + var, 0.5):
+    for j in np.arange(X2_min - var, X2_max + var, 0.5):
+        grid.append([i,j])
+grid = np.asarray(grid)
+
+grid_pred = f.test(grid)
+grid_pred = [Util.arr_to_class(grid_predi) for grid_predi in grid_pred]
+
 plt.figure()
-ax = plt.axes(projection='3d')
-ax.scatter3D(X_test[:,0], X_test[:,1], [Util.arr_to_class(y_predi) for y_predi in y_pred])
-ax.set_xlabel('X1')
-ax.set_ylabel('X2')
-ax.set_zlabel('Y')
+for i in range(len(grid)):
+    if grid_pred[i] == 0:
+        color = 'red'
+    elif grid_pred[i] == 1:
+        color = 'green'
+    plt.plot(grid[i][0], grid[i][1], c=color, marker='.', alpha=0.1)
+
+plt.plot(X_train[:,0], X_train[:,1], '.')
+plt.legend(handles=[c0, c1])
+plt.xlabel('X1')
+plt.ylabel('X2')
+plt.title("Decision plot boundary")
 
 # Activation for each neuron vs input for test data
 figs = [plt.figure() for _ in range(2)]
 for i in range(len(figs)):
     figs[i].suptitle(f"Hidden layer {i+1}")
-
-c0 = mpatches.Patch(color='red', label='Class 0')
-c1 = mpatches.Patch(color='green', label='Class 1')
 
 axs = [[] for _ in range(2)]
 for h1 in range(best_h1):

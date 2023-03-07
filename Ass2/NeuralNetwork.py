@@ -177,7 +177,7 @@ class FCNN:
     # Train network on the training data
     def train(self, X_train, y_train, eta=None, threshold=0.001, max_epoch=400, optimize=False, debug=False):
         if eta is None:
-            self.eta = 0.8 if optimize else 0.05
+            self.eta = 0.9 if optimize else 0.05
         else:
             self.eta = eta
 
@@ -185,6 +185,7 @@ class FCNN:
 
         err_arr = []
         num_epoch = 0
+        print() if debug else None
         while (num_epoch <= max_epoch):
             num_epoch += 1
             (X_train, y_train) = Util.shuffle(X_train, y_train)
@@ -206,6 +207,8 @@ class FCNN:
                         break
                 if similar:
                     break
+
+        print() if debug else None
 
         return err_arr
 
